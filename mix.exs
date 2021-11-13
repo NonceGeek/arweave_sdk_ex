@@ -4,11 +4,29 @@ defmodule ArweaveSdkEx.MixProject do
   def project do
     [
       app: :arweave_sdk_ex,
-      version: "0.0.1",
-      elixir: "~> 1.12",
+      version: "0.0.2",
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: description(),
+      package: package(),
     ]
+  end
+
+  defp description do
+    """
+      Interact with Arweave.
+    """
+  end
+
+  defp package do
+    [
+     files: ["lib", "mix.exs", "README.md"],
+     maintainers: ["leeduckgo"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/WeLightProject/arweave_sdk_ex.git",
+              "Docs" => "https://hexdocs.pm/arweave_sdk_ex/"}
+     ]
   end
 
   # Run "mix help compile.app" to learn about applications.
