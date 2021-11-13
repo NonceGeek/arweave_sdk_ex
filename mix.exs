@@ -4,7 +4,7 @@ defmodule ArweaveSdkEx.MixProject do
   def project do
     [
       app: :arweave_sdk_ex,
-      version: "0.1.0",
+      version: "0.0.1",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -23,7 +23,9 @@ defmodule ArweaveSdkEx.MixProject do
     [
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.5"},
-      {:ex_struct_translator, "~> 0.1.1"}
+      {:ex_struct_translator, "~> 0.1.1"},
+      {:ex_doc, "~> 0.11", only: :dev},
+      {:earmark, "~> 0.1", only: :dev}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]
