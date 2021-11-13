@@ -1,6 +1,6 @@
 # ArweaveSdkEx
 
-**TODO: Add description**
+Interact with Arweave.
 
 ## Installation
 
@@ -10,7 +10,7 @@ by adding `arweave_sdk_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:arweave_sdk_ex, "~> 0.1.0"}
+    {:arweave_sdk_ex, "~> 0.0.1"}
   ]
 end
 ```
