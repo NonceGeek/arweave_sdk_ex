@@ -41,7 +41,7 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
         {:ok, body}
 
       {:error, reason} ->
-        {:error, reason}
+        {:error, inspect(reason)}
     end
   end
 

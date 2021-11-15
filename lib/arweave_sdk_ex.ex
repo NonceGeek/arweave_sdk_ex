@@ -1,6 +1,6 @@
 defmodule ArweaveSdkEx do
   @moduledoc """
-  Documentation for `ArweaveSdkEx`.
+    Interact with Arweave network.
   """
   alias ArweaveSdkEx.Utils.ExHttp
 
@@ -18,6 +18,7 @@ defmodule ArweaveSdkEx do
     end
   end
 
+  @spec get_tx(binary, binary) :: {:error, binary} | {:ok, any}
   def get_tx(node, tx_id) do
     case ExHttp.get(node <> @path.tx <>tx_id) do
       {:ok, %{"tags" => tags}} ->
