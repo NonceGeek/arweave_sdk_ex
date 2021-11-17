@@ -31,8 +31,8 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     do_get(url, @retries)
   end
 
-  @spec get_once(any) :: {:error, String.t()} | {:ok, any}
-  def get_once(url) do
+  @spec get(String.t(), atom()) :: {:error, String.t()} | {:ok, any}
+  def get(url, :once) do
     url
     |> HTTPoison.get([])
     |> handle_response()
@@ -45,7 +45,7 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     end
   end
 
-  def get_with_redirect(url) do
+  def get(url, :redirect) do
     :get
     |> HTTPoison.request(url, "", [], [hackney: [{:follow_redirect, true}]])
     |> handle_response_spec()
@@ -85,6 +85,10 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
   @spec post(String.t(), map()) :: {:error, String.t()} | {:ok, any}
   def post(url, body) do
     do_post(url, body, @retries)
+  end
+
+  def post(url, body, :resp_plain) do
+    do_post(url, body, @retries, :resp_plain)
   end
 
   @spec post(String.t(), map(), atom()) :: {:error, String.t()} | {:ok, any}
@@ -133,6 +137,26 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
         do_post(url, body, retries - 1)
     end
   end
+
+  defp do_post(url, body, retries, :resp_plain) do
+    url
+    |> HTTPoison.post(
+      Poison.encode!(body),
+      [
+        {"Content-Type", "application/json"},
+        {"Accept", "text/plain"},
+      ])
+    |> handle_response_spec()
+    |> case do
+      {:ok, body} ->
+        {:ok, body}
+
+      {:error, _} ->
+        Process.sleep(500)
+        do_post(url, body, retries - 1, :resp_plain)
+    end
+  end
+
 
   # normal
   defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: body}})

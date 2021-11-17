@@ -9,8 +9,17 @@ defmodule ArweaveSdkEx do
     tx: "/tx/",
     content: "/",
   }
+
+  def send(node, data) do
+    case ExHttp.post(node <> @path.tx, data, :resp_plain) do
+      {:ok, %{body: "OK"}} ->
+        {:ok, "success"}
+      {:error, error_info} ->
+        {:error, inspect(error_info)}
+    end
+  end
   def network_available?(node) do
-    case ExHttp.get_once(node <> @path.info) do
+    case ExHttp.get(node <> @path.info, :once) do
       {:ok, _} ->
         true
       _ ->
@@ -29,7 +38,7 @@ defmodule ArweaveSdkEx do
   end
 
   def get_content_in_tx(node, tx_id) do
-    case ExHttp.get_with_redirect(node <> @path.content <> tx_id) do
+    case ExHttp.get(node <> @path.content <> tx_id, :redirect) do
       {:ok, %{body: content ,headers: headers}} ->
         {:ok, %{content: content, type: get_type(headers)}}
       others ->
