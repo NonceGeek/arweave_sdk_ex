@@ -45,6 +45,15 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     end
   end
 
+  def get(url, :plain) do
+    case get(url, :redirect) do
+      {:ok, %{body: body}} ->
+        {:ok, body}
+      {:error, msg} ->
+        {:error, inspect(msg)}
+    end
+  end
+
   def get(url, :redirect) do
     :get
     |> HTTPoison.request(url, "", [], [hackney: [{:follow_redirect, true}]])

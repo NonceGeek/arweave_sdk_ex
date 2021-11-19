@@ -32,7 +32,8 @@ defmodule ArweaveSdkEx.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+
+      extra_applications: [:logger, :export]
     ]
   end
 
@@ -43,6 +44,7 @@ defmodule ArweaveSdkEx.MixProject do
       {:httpoison, "~> 1.5"},
       {:ex_struct_translator, "~> 0.1.1"},
       {:jose, "~> 1.11"},
+      {:export, "~> 0.1.0"},
       {:ex_doc, "~> 0.11", only: :dev},
       {:earmark, "~> 0.1", only: :dev}
       # {:dep_from_hexpm, "~> 0.3.0"},

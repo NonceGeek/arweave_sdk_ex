@@ -3,11 +3,14 @@ defmodule ArweaveSdkEx do
     Interact with Arweave network.
   """
   alias ArweaveSdkEx.Utils.ExHttp
+  alias ArweaveSdkEx.Tx
 
   @path %{
     info: "/info",
     tx: "/tx/",
     content: "/",
+    last_tx: "/tx_anchor",
+    price: "/price/"
   }
 
   def send(node, data) do
@@ -18,6 +21,7 @@ defmodule ArweaveSdkEx do
         {:error, inspect(error_info)}
     end
   end
+
   def network_available?(node) do
     case ExHttp.get(node <> @path.info, :once) do
       {:ok, _} ->
@@ -62,4 +66,16 @@ defmodule ArweaveSdkEx do
     |> Enum.into(%{})
     |> Map.get("Content-Type")
   end
+
+  def get_last_tx_id(node) do
+    ExHttp.get(node <> @path.last_tx, :plain)
+    # {:ok, "DQi0fnAvdJeOY_ZlFAAqcV3PLVOY5ssV1UOBGgzMkxyAz5MLBorLO5xCrc-Hq-rV"}
+  end
+
+  def get_reward(node, data) do
+    size = Tx.get_data_size(data)
+    ExHttp.get(node <> @path.price <> size, :plain)
+    # {:ok, "64958659"}
+  end
+
 end
