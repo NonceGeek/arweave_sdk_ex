@@ -5,7 +5,6 @@ defmodule ArweaveSdkEx.Tx do
   alias __MODULE__
 
   @prefix_deep_hash %{list: "list", blob: "blob"}
-  @python_path "/usr/local/bin/python3"
   @py_files "lib/python"
 
   defstruct reward: "",
@@ -25,10 +24,10 @@ defmodule ArweaveSdkEx.Tx do
   @doc """
     get_last_tx_id by ArweaveSdkEx.get_last_tx_id(node).
   """
-  def build_tx(%{n: n} = _jwk, data, tags, last_tx_id, reward) do
+  def build_tx(%{n: n} = _jwk, data, tags, last_tx_id, reward, python_path) do
     encoded_data = Crypto.url_encode64(data)
 
-    data_root_hash = get_root_hash(encoded_data)
+    data_root_hash = get_root_hash(encoded_data, python_path)
     tags = format_tags(tags)
     %Tx{
       data: encoded_data,
@@ -122,8 +121,8 @@ defmodule ArweaveSdkEx.Tx do
   # +-------------+
   # | funcs of py |
   # +-------------+
-  def get_root_hash(data) do
-    {:ok, py} = Python.start(python: @python_path, python_path: Path.expand(@py_files))
+  def get_root_hash(data, python_path) do
+    {:ok, py} = Python.start(python: python_path, python_path: Path.expand(@py_files))
     val = Python.call(py, get_root_hash(data), from_file: "get_root_hash")
     Python.stop(py)
     val

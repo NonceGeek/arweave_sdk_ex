@@ -1,19 +1,32 @@
 defmodule ArweaveSdkEx.Utils.Crypto do
-  @jws_ps256 %{ "alg" => "PS256"}
 
-  def sign(msg, jwk) do
+  def sign(msg, jwk_json) do
     #  JOSE.JWK.from_binary(File.read!(file_path))
-    rsa_private_jwk =
-      jwk
-      |> Poison.encode!()
-      |> JOSE.JWK.from_binary()
-    do_sign(msg,rsa_private_jwk)
+    priv =
+      jwk_json
+      |> get_jwk_from_json()
+      |> jwk_to_priv()
+    do_sign(msg, priv)
   end
 
-  defp do_sign(msg, rsa_private_jwk) do
-    {_, %{"signature" => sig}} =
-      JOSE.JWK.sign(msg, @jws_ps256, rsa_private_jwk)
-    sig
+  def get_jwk_from_json(jwk_json) do
+    jwk_json
+    |> Poison.encode!()
+    |> JOSE.JWK.from_binary()
+  end
+
+  def jwk_to_priv(jwk) do
+    %JOSE.JWK{kty: {_, priv}} = jwk
+    priv
+  end
+
+  def do_sign(msg, priv) do
+    :public_key.sign(
+      msg,
+      :sha256,
+      priv,
+      [rsa_padding: :rsa_pkcs1_pss_padding, rsa_pss_saltlen: -1]
+    )
   end
 
   def sha384(data), do: :crypto.hash(:sha384, data)
@@ -21,4 +34,5 @@ defmodule ArweaveSdkEx.Utils.Crypto do
 
   def url_encode64(data), do: Base.url_encode64(data, padding: false)
   def url_decode64(data), do: Base.url_decode64!(data, padding: false)
+
 end

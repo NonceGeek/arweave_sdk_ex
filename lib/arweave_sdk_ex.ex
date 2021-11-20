@@ -14,12 +14,13 @@ defmodule ArweaveSdkEx do
   }
 
   def send(node, data) do
-    case ExHttp.post(node <> @path.tx, data, :resp_plain) do
-      {:ok, %{body: "OK"}} ->
-        {:ok, "success"}
-      {:error, error_info} ->
-        {:error, inspect(error_info)}
-    end
+    # case ExHttp.post(node <> @path.tx, data, :resp_plain) do
+    #   {:ok, %{body: "OK"}} ->
+    #     {:ok, "success"}
+    #   {:error, error_info} ->
+    #     {:error, inspect(error_info)}
+    # end
+    ExHttp.post(node <> @path.tx, data, :resp_plain)
   end
 
   def network_available?(node) do
@@ -72,10 +73,15 @@ defmodule ArweaveSdkEx do
     # {:ok, "DQi0fnAvdJeOY_ZlFAAqcV3PLVOY5ssV1UOBGgzMkxyAz5MLBorLO5xCrc-Hq-rV"}
   end
 
-  def get_reward(node, data) do
+  def get_reward(node, data, reward_coefficient) do
     size = Tx.get_data_size(data)
-    ExHttp.get(node <> @path.price <> size, :plain)
-    # {:ok, "64958659"}
+    {:ok, ori_reward} = ExHttp.get(node <> @path.price <> size, :plain)
+    reward =
+      ori_reward
+      |> String.to_integer()
+      |> Kernel.*(reward_coefficient)
+      |> Integer.to_string()
+    {:ok, reward}
   end
 
 end
