@@ -33,11 +33,11 @@ defmodule ArweaveSdkEx do
     end
   end
 
-  @spec get_tx(binary, binary) :: {:error, binary} | {:ok, any}
+  @spec get_tx(binary, binary) :: {:error, binary} | {:ok, map()}
   def get_tx(node, tx_id) do
     case ExHttp.get(node <> @path.tx <> "/" <> tx_id) do
-      {:ok, %{"tags" => tags}} ->
-        {:ok, decode_tags(tags)}
+      {:ok, %{"tags" => tags} = raw_data} ->
+        {:ok, %{decoded_tags: decode_tags(tags), raw_data: raw_data}
       others ->
         {:error, inspect(others)}
     end
