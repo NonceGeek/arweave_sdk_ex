@@ -3,7 +3,7 @@ defmodule ArweaveSdkEx.CodeRunner do
     Run codes storage in arweave TX.
   """
   def get_ex_by_tx_id(node, tx_id) do
-    {:ok, %{decode_tags: %{"Content-Type": type}}} =ArweaveSdkEx.get_tx(node, tx_id)
+    {:ok, %{decoded_tags: %{"Content-Type": type}}} =ArweaveSdkEx.get_tx(node, tx_id)
     do_get_ex_by_tx_id(node, tx_id, type)
   end
 
