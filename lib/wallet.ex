@@ -11,6 +11,7 @@ defmodule ArweaveSdkEx.Wallet do
     this func is same as sign(self) in arweave-python-client.
 
     impl of verifier in python:
+
     > https://www.dlitz.net/software/pycrypto/api/2.6/Crypto.Signature.PKCS1_PSS-module.html
 
   """
@@ -27,7 +28,8 @@ defmodule ArweaveSdkEx.Wallet do
       tx_unsigned
       |> Map.put(:signature, Crypto.url_encode64(sig_bytes))
       |> Map.put(:id, id)
-    {tx_signed, id}
+      |> Tx.encode_tx()
+    {tx_signed, id, tx_unsigned}
   end
 
   def get_raw_sig(tx_unsigned) do

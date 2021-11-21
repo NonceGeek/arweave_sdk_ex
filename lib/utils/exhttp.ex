@@ -96,14 +96,15 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     do_post(url, body, @retries)
   end
 
-  def post(url, body, :resp_plain) do
-    do_post(url, body, @retries, :resp_plain)
+  @spec post(String.t(), map(), atom()) :: {:error, String.t()} | {:ok, any}
+  def post(url, body, type) do
+    do_post(url, body, @retries, type)
   end
 
-  @spec post(String.t(), map(), atom()) :: {:error, String.t()} | {:ok, any}
-  def post(url, body, :urlencoded) do
-    do_post(url, body, @retries, :urlencoded)
+  def post(url, body, type, :without_encode) do
+    do_post(url, body, @retries, type, :without_encode)
   end
+
 
   defp do_post(_url, _body, retires) when retires == 0 do
     {:error, "retires #{@retries} times and not success"}
@@ -126,7 +127,7 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     end
   end
 
-  defp do_post(_url, _body, retires, :urlencoded) when retires == 0 do
+  defp do_post(_url, _body, retires, _) when retires == 0 do
     {:error, "retires #{@retries} times and not success"}
   end
 
@@ -166,6 +167,25 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     end
   end
 
+
+  defp do_post(url, body, retries, :resp_plain, :without_encode) do
+    url
+    |> HTTPoison.post(
+      body,
+      [
+        {"Content-Type", "application/json"},
+        {"Accept", "text/plain"},
+      ])
+    |> handle_response_spec()
+    |> case do
+      {:ok, body} ->
+        {:ok, body}
+
+      {:error, _} ->
+        Process.sleep(500)
+        do_post(url, body, retries - 1, :without_encode)
+    end
+  end
 
   # normal
   defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: body}})

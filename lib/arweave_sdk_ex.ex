@@ -7,20 +7,23 @@ defmodule ArweaveSdkEx do
 
   @path %{
     info: "/info",
-    tx: "/tx/",
+    tx: "/tx",
     content: "/",
     last_tx: "/tx_anchor",
     price: "/price/"
   }
 
-  def send(node, data) do
+  def send(node, tx) do
     # case ExHttp.post(node <> @path.tx, data, :resp_plain) do
     #   {:ok, %{body: "OK"}} ->
     #     {:ok, "success"}
     #   {:error, error_info} ->
     #     {:error, inspect(error_info)}
     # end
-    ExHttp.post(node <> @path.tx, data, :resp_plain)
+    encoded_data = Jason.encode!(ExStructTranslator.struct_to_map(tx))
+    ExHttp.post(node <> @path.tx, encoded_data, :resp_plain, :without_encode)
+    # data_encoded = Tx.encode_tx_to_json_in_spec_way(data)
+    # ExHttp.post(node <> @path.tx, data_encoded, :resp_plain, :without_encode)
   end
 
   def network_available?(node) do
@@ -34,7 +37,7 @@ defmodule ArweaveSdkEx do
 
   @spec get_tx(binary, binary) :: {:error, binary} | {:ok, any}
   def get_tx(node, tx_id) do
-    case ExHttp.get(node <> @path.tx <>tx_id) do
+    case ExHttp.get(node <> @path.tx <> "/" <> tx_id) do
       {:ok, %{"tags" => tags}} ->
         {:ok, decode_tags(tags)}
       others ->
@@ -70,7 +73,7 @@ defmodule ArweaveSdkEx do
 
   def get_last_tx_id(node) do
     ExHttp.get(node <> @path.last_tx, :plain)
-    # {:ok, "DQi0fnAvdJeOY_ZlFAAqcV3PLVOY5ssV1UOBGgzMkxyAz5MLBorLO5xCrc-Hq-rV"}
+    # {:ok, "zMfZtdel-4Z5bft4rm9yztn9oTlAy_ghBFNdgGzVZFhyk1Q4zU_9C_2LKAcHSp5M"}
   end
 
   def get_reward(node, data, reward_coefficient) do
@@ -82,6 +85,7 @@ defmodule ArweaveSdkEx do
       |> Kernel.*(reward_coefficient)
       |> Integer.to_string()
     {:ok, reward}
+    # {:ok, "58590163"}
   end
 
 end

@@ -40,13 +40,13 @@ defmodule ArweaveSdkEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:poison, "~> 3.1"},
-      {:httpoison, "~> 1.5"},
+      {:poison, "~> 5.0", override: true},
+      {:httpoison, "~> 1.8"},
       {:ex_struct_translator, "~> 0.1.1"},
       {:jose, "~> 1.11"},
       {:ex_crypto, "~> 0.10.0"},
       {:export, "~> 0.1.0"},
-
+      {:jason, "~> 1.2"},
       {:ex_doc, "~> 0.11", only: :dev},
       {:earmark, "~> 0.1", only: :dev}
       # {:dep_from_hexpm, "~> 0.3.0"},
