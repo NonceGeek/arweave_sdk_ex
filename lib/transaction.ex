@@ -60,7 +60,6 @@ defmodule ArweaveSdkEx.Tx do
   end
   def get_unsigned_payload(%Tx{} = tx)
     when tx.format == 2 do
-      IO.puts inspect gen_tag_list(tx.tags)
       signature_data_list =
         [
           Integer.to_string(2), # format
