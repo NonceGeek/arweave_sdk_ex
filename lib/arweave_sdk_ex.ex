@@ -38,8 +38,8 @@ defmodule ArweaveSdkEx do
     case ExHttp.get(node <> @path.tx <> "/" <> tx_id) do
       {:ok, %{"tags" => tags} = raw_data} ->
         {:ok, %{decoded_tags: decode_tags(tags), raw_data: raw_data}}
-      else
-        error -> {:error, inspect(others)}
+      {:error, msg} ->
+        {:error, inspect(msg)}
     end
   end
 
