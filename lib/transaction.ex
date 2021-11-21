@@ -130,20 +130,6 @@ defmodule ArweaveSdkEx.Tx do
     |> Integer.to_string()
   end
 
-  # def encode_tx_to_json_in_spec_way(tx) do
-  #   tx_without_tags =
-  #     tx
-  #     |> ExStructTranslator.struct_to_map()
-  #     |> Enum.reject(fn {key, _value} ->
-  #       key == :tags
-  #     end)
-  #     |> Enum.into(%{})
-  #   tx_without_tags
-  #   Poison.encode!(tx_without_tags)
-  # end
-
-  # def encode_tags_to_json() do
-  # end
   # +-------------+
   # | funcs of py |
   # +-------------+
@@ -153,17 +139,4 @@ defmodule ArweaveSdkEx.Tx do
     Python.stop(py)
     val
   end
-
-  # def encode_map_in_alphanumeric_key_order(obj) do
-  #   az_keys = obj |> Map.keys |> Enum.sort
-  #   iodata = [
-  #     "{",
-  #     Enum.map(az_keys, fn k ->
-  #       v = obj[k]
-  #       [Poison.encode!(k), ":", encode_object_in_alphanumeric_key_order(v)]
-  #     end) |> Enum.intersperse(","),
-  #     "}"
-  #   ]
-  #   IO.iodata_to_binary(iodata)
-  # end
 end

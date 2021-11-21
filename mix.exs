@@ -4,7 +4,7 @@ defmodule ArweaveSdkEx.MixProject do
   def project do
     [
       app: :arweave_sdk_ex,
-      version: "0.0.3",
+      version: "0.0.4",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -40,11 +40,10 @@ defmodule ArweaveSdkEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:poison, "~> 5.0", override: true},
+
       {:httpoison, "~> 1.8"},
       {:ex_struct_translator, "~> 0.1.1"},
       {:jose, "~> 1.11"},
-      {:ex_crypto, "~> 0.10.0"},
       {:export, "~> 0.1.0"},
       {:jason, "~> 1.2"},
       {:ex_doc, "~> 0.11", only: :dev},

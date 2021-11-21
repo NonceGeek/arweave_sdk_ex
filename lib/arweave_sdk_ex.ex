@@ -14,16 +14,14 @@ defmodule ArweaveSdkEx do
   }
 
   def send(node, tx) do
-    # case ExHttp.post(node <> @path.tx, data, :resp_plain) do
-    #   {:ok, %{body: "OK"}} ->
-    #     {:ok, "success"}
-    #   {:error, error_info} ->
-    #     {:error, inspect(error_info)}
-    # end
+    # Reason: Jason is alphanumeric key order here.
     encoded_data = Jason.encode!(ExStructTranslator.struct_to_map(tx))
-    ExHttp.post(node <> @path.tx, encoded_data, :resp_plain, :without_encode)
-    # data_encoded = Tx.encode_tx_to_json_in_spec_way(data)
-    # ExHttp.post(node <> @path.tx, data_encoded, :resp_plain, :without_encode)
+    case ExHttp.post(node <> @path.tx, encoded_data, :resp_plain, :without_encode) do
+      {:ok, %{status_code: 200}} ->
+        {:ok, "success submit tx"}
+      error_msg ->
+        {:error, inspect(error_msg)}
+    end
   end
 
   def network_available?(node) do
