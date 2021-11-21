@@ -23,6 +23,6 @@ defmodule ArweaveSdkEx.CodeRunner do
   def run_ex(code, params_map) do
     params_list = Map.to_list(params_map)
     {result, _} = Code.eval_string(code,params_list, __ENV__)
-    %{result: result, input: params_map}
+    %{output: result, input: params_map}
   end
 end
