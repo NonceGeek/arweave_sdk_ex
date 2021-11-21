@@ -4,8 +4,9 @@ defmodule ArweaveSdkEx.Tx do
   alias ArweaveSdkEx.Utils.Crypto
   alias __MODULE__
 
+  @cwd File.cwd!
   @prefix_deep_hash %{list: "list", blob: "blob"}
-  @py_files "lib/python"
+  @py_files @cwd <> "/lib/python"
 
   defstruct reward: "",
     owner: "",
@@ -139,4 +140,5 @@ defmodule ArweaveSdkEx.Tx do
     Python.stop(py)
     val
   end
+
 end
