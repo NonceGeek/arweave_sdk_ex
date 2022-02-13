@@ -9,18 +9,18 @@ defmodule ArweaveSdkEx.Tx do
 
   @note_size 32
   @max_chunk_size 256 * 1024
+  @min_chunk_size 32 * 1024
 
   defstruct reward: "",
             owner: "",
             target: <<>>,
-            tags: %{},
+            tags: [],
             data: <<>>,
             last_tx: <<>>,
             data_root: <<>>,
             signature: <<>>,
             quantity: "0",
             format: 2,
-            data_tree: [],
             data_size: <<>>,
             id: <<>>
 
@@ -30,7 +30,7 @@ defmodule ArweaveSdkEx.Tx do
   def build_tx(%{n: n} = _jwk, data, tags, last_tx_id, reward, python_path) do
     encoded_data = Crypto.url_encode64(data)
 
-    data_root_hash = get_root_hash(encoded_data, python_path)
+    data_root_hash = get_root_hash(data)
 
     %Tx{
       data: encoded_data,
@@ -168,14 +168,17 @@ defmodule ArweaveSdkEx.Tx do
     if len < @max_chunk_size do
       [gen_chunk_data(data, start_range) | all_chunk]
     else
-      first = binary_part(data, 0, @max_chunk_size)
+      next_chunk_size = len - @max_chunk_size
 
+      chunk_size = if(next_chunk_size < @min_chunk_size, do: ceil(len / 2), else: @max_chunk_size)
+
+      first = binary_part(data, 0, chunk_size)
       first_chunk = gen_chunk_data(first, start_range)
 
       [
         first_chunk
         | chunk(
-            binary_part(data, @max_chunk_size, len - @max_chunk_size),
+            binary_part(data, @max_chunk_size, len - chunk_size),
             first_chunk.max_byte_range,
             all_chunk
           )
