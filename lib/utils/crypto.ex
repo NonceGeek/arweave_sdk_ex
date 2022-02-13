@@ -20,6 +20,14 @@ defmodule ArweaveSdkEx.Utils.Crypto do
     priv
   end
 
+
+  # TODO: pub to addr
+
+  def jwk_to_pub(jwk) do
+    %JOSE.JWK{kty: {_, pub}} = JOSE.JWK.to_public(jwk)
+    pub
+  end
+
   def do_sign(msg, priv) do
     :public_key.sign(
       msg,

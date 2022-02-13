@@ -183,7 +183,7 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
 
       {:error, _} ->
         Process.sleep(500)
-        do_post(url, body, retries - 1, :without_encode)
+        do_post(url, body, retries - 1, :resp_plain, :without_encode)
     end
   end
 
