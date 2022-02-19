@@ -16,11 +16,11 @@ defmodule ArweaveSdkEx.Wallet do
 
   """
 
-  @spec sign_tx(String.t(), String.t(), map(), map(), integer(), String.t()) :: {%Tx{}, String.t()}
-  def sign_tx(node, data, tags, jwk_json, reward_coefficient, python_path) do
+  @spec sign_tx(String.t(), String.t(), map(), map(), integer()) :: {%Tx{}, String.t()}
+  def sign_tx(node, data, tags, jwk_json, reward_coefficient) do
     {:ok, last_tx_id} = ArweaveSdkEx.get_last_tx_id(node)
     {:ok, reward} = ArweaveSdkEx.get_reward(node, data, reward_coefficient)
-    tx_unsigned = Tx.build_tx(jwk_json, data, tags, last_tx_id, reward, python_path)
+    tx_unsigned = Tx.build_tx(jwk_json, data, tags, last_tx_id, reward)
     sig_unsigned = get_raw_sig(tx_unsigned)
     sig_bytes = Crypto.sign(sig_unsigned, jwk_json)
     id = get_id(sig_bytes)
