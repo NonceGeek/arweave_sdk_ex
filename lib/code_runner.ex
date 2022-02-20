@@ -39,7 +39,15 @@ defmodule ArweaveSdkEx.CodeRunner do
 
   def run_ex(code, params_map) do
     params_list = Map.to_list(params_map)
-    {result, _} = Code.eval_string(code,params_list, __ENV__)
+    {result, _} = Code.eval_string(code, params_list, __ENV__)
     %{output: result, input: params_map}
+  end
+
+  def run_func(mod_name, func_name, params) do
+    func_name_atom = String.to_atom(func_name)
+    "Elixir.#{mod_name}"
+    |> String.to_atom()
+    |> apply(func_name_atom, params)
+    |> Enum.into(%{})
   end
 end
