@@ -24,12 +24,30 @@ defmodule ArweaveSdkEx do
     end
   end
 
-  def network_available?(node) do
+  def network_info(node) do
     case ExHttp.get(node <> @path.info, :once) do
+      {:ok, info} ->
+        {:ok, info}
+      _ ->
+        {:error, "failed to get network info"}
+    end
+  end
+
+  def network_available?(node) do
+    case network_info(node) do
       {:ok, _} ->
         true
       _ ->
         false
+    end
+  end
+
+  def block_height(node) do
+    case network_info(node) do
+      {:ok, %{ "height" => height }} ->
+        height
+      _ ->
+        -1
     end
   end
 
