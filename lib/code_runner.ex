@@ -48,6 +48,5 @@ defmodule ArweaveSdkEx.CodeRunner do
     "Elixir.#{mod_name}"
     |> String.to_atom()
     |> apply(func_name_atom, params)
-    |> Enum.into(%{})
   end
 end

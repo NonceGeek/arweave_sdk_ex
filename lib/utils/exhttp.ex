@@ -54,7 +54,11 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     end
   end
 
-  def get(url, :redirect) do
+  def get(_url, :redirect, retries) when retries == 0 do
+    {:error, "retires #{@retries} times and not success"}
+  end
+
+  def get(url, :redirect, retries \\ 5) do
     :get
     |> HTTPoison.request(url, "", [], [hackney: [{:follow_redirect, true}]])
     |> handle_response_spec()
@@ -64,9 +68,11 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
 
       {:error, _} ->
         Process.sleep(500)
-        do_get(url, @retries - 1)
+        get(url, :redirect, retries - 1)
     end
   end
+
+
 
   defp do_get(_url, retries) when retries == 0 do
     {:error, "retires #{@retries} times and not success"}
