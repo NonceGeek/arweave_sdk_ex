@@ -4,6 +4,7 @@ defmodule ArweaveSdkEx do
   """
   alias ArweaveSdkEx.Utils.ExHttp
   alias ArweaveSdkEx.Tx
+  require Logger
 
   @path %{
     info: "/info",
@@ -62,7 +63,9 @@ defmodule ArweaveSdkEx do
   end
 
   def get_content_in_tx(node, tx_id) do
-    case ExHttp.get(node <> @path.content <> tx_id, :redirect) do
+    url = node <> @path.content <> tx_id
+    Logger.info("get_content_in_tx: url: #{url}")
+    case ExHttp.get(url, :redirect) do
       {:ok, %{body: content ,headers: headers}} ->
         {:ok, %{content: content, type: get_type(headers)}}
       others ->
