@@ -39,7 +39,6 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     |> case do
       {:ok, body} ->
         {:ok, body}
-
       {:error, reason} ->
         {:error, inspect(reason)}
     end
@@ -65,7 +64,8 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     |> case do
       {:ok, body} ->
         {:ok, body}
-
+      {:error, :not_found} ->
+        {:error, 404} # Immediately return on a 404 without retrying
       {:error, _} ->
         Process.sleep(500)
         get(url, :redirect, retries - 1)
@@ -85,7 +85,8 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     |> case do
       {:ok, body} ->
         {:ok, body}
-
+      {:error, :not_found} ->
+        {:error, 404} # Immediately return on a 404 without retrying
       {:error, _} ->
         Process.sleep(500)
         do_get(url, retries - 1)
@@ -126,7 +127,8 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     |> case do
       {:ok, body} ->
         {:ok, body}
-
+      {:error, :not_found} ->
+        {:error, 404} # Immediately return on a 404 without retrying
       {:error, _} ->
         Process.sleep(500)
         do_post(url, body, retries - 1)
@@ -147,7 +149,8 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     |> case do
       {:ok, body} ->
         {:ok, body}
-
+      {:error, :not_found} ->
+        {:error, 404} # Immediately return on a 404 without retrying
       {:error, _} ->
         Process.sleep(500)
         do_post(url, body, retries - 1)
@@ -166,7 +169,8 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     |> case do
       {:ok, body} ->
         {:ok, body}
-
+      {:error, :not_found} ->
+        {:error, 404} # Immediately return on a 404 without retrying
       {:error, _} ->
         Process.sleep(500)
         do_post(url, body, retries - 1, :resp_plain)
@@ -186,7 +190,8 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     |> case do
       {:ok, body} ->
         {:ok, body}
-
+      {:error, :not_found} ->
+        {:error, 404} # Immediately return on a 404 without retrying
       {:error, _} ->
         Process.sleep(500)
         do_post(url, body, retries - 1, :resp_plain, :without_encode)
@@ -206,7 +211,13 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     end
   end
 
-  # 404 or sth else
+  # 404 
+  defp handle_response({:ok, %HTTPoison.Response{status_code: 404, body: _body}}) do
+    Logger.error("HTTP 404 Not Found")
+    {:error, :not_found}  # Specific handling for 404 status
+  end
+
+  # sth else
   defp handle_response({:ok, %HTTPoison.Response{status_code: status_code, body: _}}) do
     Logger.error("Reason: #{status_code} ")
     {:error, :network_error}
@@ -221,8 +232,11 @@ defmodule ArweaveSdkEx.Utils.ExHttp do
     payload
   end
 
+  defp handle_response_spec({:ok, %{status_code: 404}}) do
+    {:error, :not_found}
+  end
+
   # 404 or sth else
   defp handle_response_spec(others), do: handle_response(others)
-
 
 end

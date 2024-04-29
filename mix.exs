@@ -4,7 +4,7 @@ defmodule ArweaveSdkEx.MixProject do
   def project do
     [
       app: :arweave_sdk_ex,
-      version: "0.1.10",
+      version: "0.1.11",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -24,7 +24,7 @@ defmodule ArweaveSdkEx.MixProject do
      files: ["lib", "mix.exs", "README.md"],
      maintainers: ["leeduckgo"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/WeLightProject/arweave_sdk_ex.git",
+     links: %{"GitHub" => "https://github.com/noncegeek/arweave_sdk_ex.git",
               "Docs" => "https://hexdocs.pm/arweave_sdk_ex/"}
      ]
   end
